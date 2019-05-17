@@ -216,14 +216,14 @@ class Environment():
             cuda_req = val[0]
             cudnn_req = val[1].split(".")
             if cuda_req == self.cuda_version and (cudnn_req[0] == cudnn_inst[0] and
-                                                  cudnn_req[1] <= cudnn_inst[1]):
+                                                  cudnn_req[1] >= cudnn_inst[1]):
                 tf_ver = key
                 break
         if tf_ver:
             tf_ver = "tensorflow-gpu{}".format(tf_ver)
             self.required_packages.append(tf_ver)
             return
-
+            
         self.output.warning(
             "The minimum Tensorflow requirement is 1.12. \n"
             "Tensorflow currently has no official prebuild for your CUDA, cuDNN "
@@ -476,7 +476,7 @@ class Checks():
         chk = chk.strip().replace("libcudnn.so.", "")
         cudnn_vers = chk[0]
         cudnn_path = chk[chk.find("=>") + 3:chk.find("libcudnn") - 1]
-        cudnn_path = cudnn_path.replace("lib", "include")
+        cudnn_path = cudnn_path.replace("lib64", "include")
         cudnn_checkfiles = [os.path.join(cudnn_path, "cudnn_v{}.h".format(cudnn_vers)),
                             os.path.join(cudnn_path, "cudnn.h")]
         return cudnn_checkfiles
